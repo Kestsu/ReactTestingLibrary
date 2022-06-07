@@ -2,7 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
-import renderWithRouter from '../components/renderWithRouter';
+import renderWithRouter from '../renderWithRouter';
 
 describe('7. Teste o componente <PokemonDetails.js />', () => {
   test('Teste se as informações detalhadas são mostradas na tela:', () => {
