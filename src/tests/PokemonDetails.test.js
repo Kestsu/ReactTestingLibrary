@@ -7,6 +7,7 @@ import renderWithRouter from '../renderWithRouter';
 describe('7. Teste o componente <PokemonDetails.js />', () => {
   test('Teste se as informações detalhadas são mostradas na tela:', () => {
     renderWithRouter(<App />);
+
     const botao = screen.getByText(/More details/i);
     userEvent.click(botao);
 
@@ -20,6 +21,9 @@ describe('7. Teste o componente <PokemonDetails.js />', () => {
       /This intelligent Pokémon roasts hard berries with electricity/i,
     );
     expect(detalhes).toBeInTheDocument();
+
+    const b = screen.queryByText(/More details/i);
+    expect(b).toBe(null);
   });
   test('Teste se existe mapas contendo as localizações do pokémon', () => {
     renderWithRouter(<App />);
@@ -42,14 +46,18 @@ describe('7. Teste o componente <PokemonDetails.js />', () => {
     expect(image[1]).toHaveProperty(
       'src',
       'https://pwo-wiki.info/images/4/47/Viridian_Forest.gif',
-    //   'alt',
-    //   'Pikachu location',
+    );
+    expect(image[1]).toHaveProperty(
+      'alt',
+      'Pikachu location',
     );
     expect(image[2]).toHaveProperty(
       'src',
       'https://pwo-wiki.info/images/5/5b/Pp.gif',
-    //   'alt',
-    //   'Pikachu location',
+    );
+    expect(image[2]).toHaveProperty(
+      'alt',
+      'Pikachu location',
     );
   });
   test('Teste se pode favoritar um pokémon através da página de detalhes', () => {
