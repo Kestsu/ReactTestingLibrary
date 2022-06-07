@@ -1,12 +1,28 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from '../App';
+import Pokedex from '../pages/Pokedex';
 import renderWithRouter from '../renderWithRouter';
+import pokemons from '../data';
+
+const isPokemonFavoriteById = {
+  4: false,
+  10: false,
+  23: false,
+  25: false,
+  65: false,
+  78: false,
+  143: false,
+  148: false,
+  151: false,
+};
 
 describe('5. Teste o componente <Pokedex.js />', () => {
   test('Teste se contém um heading h2 com o texto Encountered pokémons', () => {
-    renderWithRouter(<App />);
+    renderWithRouter(<Pokedex
+      pokemons={ pokemons }
+      isPokemonFavoriteById={ isPokemonFavoriteById }
+    />);
     const titulo = screen.getByRole(
       'heading', {
         name: /Encountered pokémons/i, level: 2,
@@ -15,7 +31,10 @@ describe('5. Teste o componente <Pokedex.js />', () => {
     expect(titulo).toBeInTheDocument();
   });
   test('Teste se é exibido o próximo pokémon da lista quando o botão é clicado', () => {
-    renderWithRouter(<App />);
+    renderWithRouter(<Pokedex
+      pokemons={ pokemons }
+      isPokemonFavoriteById={ isPokemonFavoriteById }
+    />);
     const botao = screen.getByTestId('next-pokemon');
     expect(botao).toBeInTheDocument();
     userEvent.click(botao);
@@ -46,12 +65,19 @@ describe('5. Teste o componente <Pokedex.js />', () => {
     const pikachu = screen.getByText(/Pikachu/i);
     expect(pikachu).toBeInTheDocument();
   });
-  //     test('Teste se é mostrado apenas um pokémon por vez', () => {
-  // renderWithRouter(<App />);
-
-  //     });
+  test('Teste se é mostrado apenas um pokémon por vez', () => {
+    renderWithRouter(<Pokedex
+      pokemons={ pokemons }
+      isPokemonFavoriteById={ isPokemonFavoriteById }
+    />);
+    const imagens = screen.getAllByRole('img');
+    expect(imagens.length).toBe(1);
+  });
   test('Teste se a Pokédex tem os botões de filtro:', () => {
-    renderWithRouter(<App />);
+    renderWithRouter(<Pokedex
+      pokemons={ pokemons }
+      isPokemonFavoriteById={ isPokemonFavoriteById }
+    />);
     const all = screen.getByRole('button', { name: /All/i });
     const electric = screen.getByRole('button', { name: /Electric/i });
     const fire = screen.getByRole('button', { name: /Fire/i });
@@ -68,7 +94,32 @@ describe('5. Teste o componente <Pokedex.js />', () => {
     expect(psychic).toBeInTheDocument();
     expect(normal).toBeInTheDocument();
     expect(dragon).toBeInTheDocument();
+
+    const allBtn = screen.getAllByTestId('pokemon-type-button');
+    const sete = 7;
+    expect(allBtn.length).toBe(sete);
+
+    userEvent.click(bug);
+    const next = screen.getByText(/Próximo pokémon/i);
+    expect(next).toHaveProperty('disabled');
+    const a = screen.queryByRole('button', { name: /All/i });
+    expect(a).not.toHaveProperty('disabled', 'false');
   });
-//   test('', () => {});
-//   test('', () => {});
+  test('Teste se a Pokédex contém um botão para resetar o filtro:', () => {
+    const { history } = renderWithRouter(<Pokedex
+      pokemons={ pokemons }
+      isPokemonFavoriteById={ isPokemonFavoriteById }
+    />);
+    const all = screen.getByRole('button', { name: /All/i });
+    expect(all).toBeInTheDocument();
+    const next = screen.getByText(/Próximo pokémon/i);
+    expect(next).toBeInTheDocument();
+
+    history.push('/');
+    const proximo = screen.getByText(/Próximo pokémon/i);
+    expect(proximo).toHaveProperty('disabled');
+    const a = screen.queryByRole('button', { name: /All/i });
+    userEvent.click(a);
+    expect(a).toBeVisible();
+  });
 });
